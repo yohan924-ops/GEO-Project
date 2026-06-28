@@ -11,8 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import type { RankingRow } from "@/lib/api";
-
-const COLORS = ["#4f86f7", "#56c596", "#f7b955", "#e06c75", "#9a7bdc", "#43b9c7"];
+import { CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/lib/chartTheme";
 
 export function RankingChart({ rankings }: { rankings: RankingRow[] }) {
   const data = rankings.slice(0, 10).map((r) => ({
@@ -24,28 +23,28 @@ export function RankingChart({ rankings }: { rankings: RankingRow[] }) {
     <div style={{ width: "100%", height: 320 }}>
       <ResponsiveContainer>
         <BarChart data={data} layout="vertical" margin={{ left: 24, right: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#272b34" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis
             type="number"
             domain={[0, 100]}
             unit="%"
-            stroke="#9aa3b2"
+            stroke="#7a7a7a"
             fontSize={12}
           />
           <YAxis
             type="category"
             dataKey="name"
             width={110}
-            stroke="#9aa3b2"
+            stroke="#7a7a7a"
             fontSize={12}
           />
           <Tooltip
             formatter={(v: number) => [`${v}%`, "노출률"]}
-            contentStyle={{ background: "#181b22", border: "1px solid #272b34" }}
+            contentStyle={CHART_TOOLTIP_STYLE}
           />
           <Bar dataKey="rate" radius={[0, 4, 4, 0]}>
             {data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
             ))}
           </Bar>
         </BarChart>

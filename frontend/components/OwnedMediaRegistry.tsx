@@ -55,14 +55,7 @@ export function OwnedMediaRegistry({ brandId }: { brandId: number }) {
           <select
             value={mediaType}
             onChange={(e) => setMediaType(e.target.value as MediaType)}
-            style={{
-              background: "#0f1115",
-              color: "var(--text)",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              padding: "9px 11px",
-              fontSize: 14,
-            }}
+            style={{ minWidth: 140 }}
           >
             {MEDIA_TYPES.map((t) => (
               <option key={t} value={t}>
@@ -93,9 +86,10 @@ export function OwnedMediaRegistry({ brandId }: { brandId: number }) {
               onClick={() => remove(it.id)}
               style={{
                 background: "transparent",
-                color: "var(--muted)",
-                padding: "0 4px",
+                color: "var(--ink-muted-48)",
+                padding: "0 2px",
                 fontSize: 13,
+                lineHeight: 1,
               }}
               aria-label="remove"
             >
