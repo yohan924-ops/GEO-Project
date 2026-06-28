@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     keyword_count: int = 100
     question_count: int = 100
     provider_concurrency: int = 5
+    search_repeats: int = 10  # repeats per prompt per provider (service 2/3)
+    max_retries: int = 3  # transient-error retries with exponential backoff
 
 
 @lru_cache

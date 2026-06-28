@@ -92,3 +92,36 @@ export function singleSearch(prompt: string): Promise<SingleSearchResponse> {
     body: JSON.stringify({ prompt }),
   });
 }
+
+export interface RankingRow {
+  brand_or_service: string;
+  mention_count: number;
+  appearance_rate: number;
+  avg_rank: number;
+  stability: number;
+  by_provider: Record<string, number>;
+}
+
+export interface RankingResponse {
+  analysis: Analysis;
+  total_runs: number;
+  rankings: RankingRow[];
+}
+
+export function runAnalysis(
+  analysisId: number,
+  repeats?: number,
+): Promise<Analysis> {
+  return request<Analysis>(`/analyses/${analysisId}/run`, {
+    method: "POST",
+    body: JSON.stringify({ repeats }),
+  });
+}
+
+export function getRankings(analysisId: number): Promise<RankingResponse> {
+  return request<RankingResponse>(`/analyses/${analysisId}/rankings`);
+}
+
+export function getAnalysis(analysisId: number): Promise<Analysis> {
+  return request<Analysis>(`/analyses/${analysisId}`);
+}

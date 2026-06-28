@@ -4,12 +4,17 @@ import { useState } from "react";
 import {
   createBrand,
   generatePrompts,
+  getRankings,
+  runAnalysis,
   singleSearch,
   type AnalysisWithPrompts,
+  type RankingResponse,
   type SingleSearchResponse,
 } from "@/lib/api";
 import { PromptList } from "@/components/PromptList";
 import { SearchResult } from "@/components/SearchResult";
+import { RankingChart } from "@/components/RankingChart";
+import { RankingTable } from "@/components/RankingTable";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -21,6 +26,9 @@ export default function Home() {
   const [searchPrompt, setSearchPrompt] = useState("");
   const [searching, setSearching] = useState(false);
   const [search, setSearch] = useState<SingleSearchResponse | null>(null);
+
+  const [running, setRunning] = useState(false);
+  const [ranking, setRanking] = useState<RankingResponse | null>(null);
 
   async function onGenerate() {
     setError(null);
@@ -34,6 +42,22 @@ export default function Home() {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function onRun() {
+    if (!result) return;
+    setError(null);
+    setRunning(true);
+    setRanking(null);
+    try {
+      // Phase 2: small repeat count for fast, free dev runs.
+      await runAnalysis(result.analysis.id, 3);
+      setRanking(await getRankings(result.analysis.id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setRunning(false);
     }
   }
 
@@ -89,7 +113,33 @@ export default function Home() {
       </section>
 
       <section className="panel">
-        <h2 style={{ marginTop: 0, fontSize: 18 }}>② 3사 1회 검색 (어댑터 검증)</h2>
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>② 순위 분석 (서비스 2)</h2>
+        <p className="muted" style={{ fontSize: 13, marginTop: 0 }}>
+          생성된 프롬프트를 3사에 반복 검색해 답변에 등장하는 브랜드/서비스의 노출
+          순위·빈도·안정성을 집계합니다.
+        </p>
+        <button onClick={onRun} disabled={running || !result}>
+          {running ? "분석 중…" : result ? "순위 분석 실행" : "먼저 프롬프트를 생성하세요"}
+        </button>
+        {ranking && (
+          <div style={{ marginTop: 16 }}>
+            <span className="badge">총 {ranking.total_runs}회 검색</span>{" "}
+            <span className="badge">cost ${ranking.analysis.cost_usd.toFixed(4)}</span>
+            {ranking.rankings.length > 0 ? (
+              <>
+                <h3 style={{ marginTop: 16 }}>노출률 상위</h3>
+                <RankingChart rankings={ranking.rankings} />
+                <RankingTable rankings={ranking.rankings} />
+              </>
+            ) : (
+              <p className="muted">집계된 멘션이 없습니다.</p>
+            )}
+          </div>
+        )}
+      </section>
+
+      <section className="panel">
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>③ 3사 1회 검색 (어댑터 검증)</h2>
         <div className="row">
           <div style={{ flex: 1 }}>
             <label>프롬프트</label>
