@@ -125,3 +125,54 @@ export function getRankings(analysisId: number): Promise<RankingResponse> {
 export function getAnalysis(analysisId: number): Promise<Analysis> {
   return request<Analysis>(`/analyses/${analysisId}`);
 }
+
+export type MediaType = "web" | "instagram" | "blog" | "facebook";
+
+export interface OwnedMedia {
+  id: number;
+  brand_id: number;
+  media_type: string;
+  domain_or_handle: string;
+}
+
+export function listOwnedMedia(brandId: number): Promise<OwnedMedia[]> {
+  return request<OwnedMedia[]>(`/brands/${brandId}/owned-media`);
+}
+
+export function createOwnedMedia(
+  brandId: number,
+  mediaType: MediaType,
+  domainOrHandle: string,
+): Promise<OwnedMedia> {
+  return request<OwnedMedia>(`/brands/${brandId}/owned-media`, {
+    method: "POST",
+    body: JSON.stringify({ media_type: mediaType, domain_or_handle: domainOrHandle }),
+  });
+}
+
+export function deleteOwnedMedia(id: number): Promise<void> {
+  return fetch(`${API_BASE}/owned-media/${id}`, { method: "DELETE" }).then((res) => {
+    if (!res.ok) throw new Error(`API ${res.status}`);
+  });
+}
+
+export interface CitationShareRow {
+  brand_id: number;
+  brand_name: string;
+  citation_count: number;
+  share: number;
+  by_media_type: Record<string, number>;
+}
+
+export interface CitationShareResponse {
+  analysis_id: number;
+  total_citations: number;
+  matched_citations: number;
+  rows: CitationShareRow[];
+}
+
+export function getCitationShare(
+  analysisId: number,
+): Promise<CitationShareResponse> {
+  return request<CitationShareResponse>(`/analyses/${analysisId}/citation-share`);
+}

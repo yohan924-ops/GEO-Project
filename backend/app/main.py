@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import analyses, brands, rankings, search
+from app.api import analyses, brands, citations, owned_media, rankings, search
 from app.config import get_settings
 from app.db import init_db
 
@@ -29,6 +29,8 @@ app.add_middleware(
 app.include_router(brands.router)
 app.include_router(analyses.router)
 app.include_router(rankings.router)
+app.include_router(owned_media.router)
+app.include_router(citations.router)
 app.include_router(search.router)
 
 

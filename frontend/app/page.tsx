@@ -4,10 +4,12 @@ import { useState } from "react";
 import {
   createBrand,
   generatePrompts,
+  getCitationShare,
   getRankings,
   runAnalysis,
   singleSearch,
   type AnalysisWithPrompts,
+  type CitationShareResponse,
   type RankingResponse,
   type SingleSearchResponse,
 } from "@/lib/api";
@@ -15,6 +17,8 @@ import { PromptList } from "@/components/PromptList";
 import { SearchResult } from "@/components/SearchResult";
 import { RankingChart } from "@/components/RankingChart";
 import { RankingTable } from "@/components/RankingTable";
+import { OwnedMediaRegistry } from "@/components/OwnedMediaRegistry";
+import { CitationShare } from "@/components/CitationShare";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -29,6 +33,9 @@ export default function Home() {
 
   const [running, setRunning] = useState(false);
   const [ranking, setRanking] = useState<RankingResponse | null>(null);
+
+  const [loadingShare, setLoadingShare] = useState(false);
+  const [share, setShare] = useState<CitationShareResponse | null>(null);
 
   async function onGenerate() {
     setError(null);
@@ -58,6 +65,19 @@ export default function Home() {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setRunning(false);
+    }
+  }
+
+  async function onLoadShare() {
+    if (!result) return;
+    setError(null);
+    setLoadingShare(true);
+    try {
+      setShare(await getCitationShare(result.analysis.id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoadingShare(false);
     }
   }
 
@@ -139,7 +159,35 @@ export default function Home() {
       </section>
 
       <section className="panel">
-        <h2 style={{ marginTop: 0, fontSize: 18 }}>③ 3사 1회 검색 (어댑터 검증)</h2>
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>③ 온드미디어 인용 점유율 (서비스 3)</h2>
+        <p className="muted" style={{ fontSize: 13, marginTop: 0 }}>
+          브랜드의 온드미디어(웹·블로그·인스타·페북)를 등록하면, 검색 답변의 인용
+          URL을 도메인·핸들로 매핑해 브랜드별 인용 점유율을 집계합니다.
+        </p>
+        {result ? (
+          <>
+            <OwnedMediaRegistry brandId={result.analysis.brand_id} />
+            <div style={{ marginTop: 16 }}>
+              <button onClick={onLoadShare} disabled={loadingShare}>
+                {loadingShare ? "집계 중…" : "인용 점유율 집계"}
+              </button>
+              <span className="muted" style={{ fontSize: 12, marginLeft: 10 }}>
+                ※ 먼저 ② 순위 분석을 실행해 검색 데이터를 만들어야 합니다.
+              </span>
+            </div>
+            {share && (
+              <div style={{ marginTop: 16 }}>
+                <CitationShare data={share} />
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="muted">먼저 프롬프트를 생성하세요.</p>
+        )}
+      </section>
+
+      <section className="panel">
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>④ 3사 1회 검색 (어댑터 검증)</h2>
         <div className="row">
           <div style={{ flex: 1 }}>
             <label>프롬프트</label>
