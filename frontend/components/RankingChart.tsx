@@ -11,9 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import type { RankingRow } from "@/lib/api";
-
-// Single Action Blue accent, stepped toward ink for lower ranks (Apple palette).
-const COLORS = ["#0066cc", "#0071e3", "#2997ff", "#1d1d1f", "#7a7a7a", "#aeaeb2"];
+import { CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/lib/chartTheme";
 
 export function RankingChart({ rankings }: { rankings: RankingRow[] }) {
   const data = rankings.slice(0, 10).map((r) => ({
@@ -42,16 +40,11 @@ export function RankingChart({ rankings }: { rankings: RankingRow[] }) {
           />
           <Tooltip
             formatter={(v: number) => [`${v}%`, "노출률"]}
-            contentStyle={{
-              background: "#ffffff",
-              border: "1px solid #e0e0e0",
-              borderRadius: 11,
-              color: "#1d1d1f",
-            }}
+            contentStyle={CHART_TOOLTIP_STYLE}
           />
           <Bar dataKey="rate" radius={[0, 4, 4, 0]}>
             {data.map((_, i) => (
-              <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
             ))}
           </Bar>
         </BarChart>

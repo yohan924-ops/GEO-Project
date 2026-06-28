@@ -125,10 +125,10 @@ export default function Home() {
       <section className="panel">
         <p className="eyebrow">단계 01</p>
         <h2>프롬프트 생성</h2>
-        <p className="muted" style={{ marginTop: 0 }}>
+        <p className="muted section-copy">
           브랜드/제품명으로 국내 소비자가 검색할 키워드와 질문 프롬프트를 생성합니다.
         </p>
-        <div className="row" style={{ marginTop: 20 }}>
+        <div className="row">
           <div>
             <label>브랜드 / 제품명</label>
             <input
@@ -161,7 +161,7 @@ export default function Home() {
       <section className="panel">
         <p className="eyebrow">단계 02 · 서비스 2</p>
         <h2>순위 분석</h2>
-        <p className="muted" style={{ marginTop: 0, marginBottom: 20 }}>
+        <p className="muted section-copy">
           생성된 프롬프트를 3사에 반복 검색해 답변에 등장하는 브랜드/서비스의 노출
           순위·빈도·안정성을 집계합니다.
         </p>
@@ -188,7 +188,7 @@ export default function Home() {
       <section className="panel">
         <p className="eyebrow">단계 03 · 서비스 3</p>
         <h2>온드미디어 인용 점유율</h2>
-        <p className="muted" style={{ marginTop: 0, marginBottom: 20 }}>
+        <p className="muted section-copy">
           브랜드의 온드미디어(웹·블로그·인스타·페북)를 등록하면, 검색 답변의 인용
           URL을 도메인·핸들로 매핑해 브랜드별 인용 점유율을 집계합니다.
         </p>
@@ -217,7 +217,7 @@ export default function Home() {
       <section className="panel">
         <p className="eyebrow">단계 04 · 서비스 4</p>
         <h2>GEO 전략 리포트</h2>
-        <p className="muted" style={{ marginTop: 0, marginBottom: 20 }}>
+        <p className="muted section-copy">
           02·03 분석 결과를 바탕으로 갭을 분석해 GEO 점유율을 높이기 위한 우선순위
           전략을 생성합니다.
         </p>
@@ -240,7 +240,7 @@ export default function Home() {
       <section className="panel">
         <p className="eyebrow">검증</p>
         <h2>3사 1회 검색</h2>
-        <p className="muted" style={{ marginTop: 0, marginBottom: 20 }}>
+        <p className="muted section-copy">
           단일 프롬프트를 ChatGPT·Gemini·Claude에 한 번씩 호출해 답변과 인용 파싱을
           확인합니다.
         </p>

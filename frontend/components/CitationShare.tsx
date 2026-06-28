@@ -2,8 +2,7 @@
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import type { CitationShareResponse } from "@/lib/api";
-
-const COLORS = ["#0066cc", "#2997ff", "#1d1d1f", "#7a7a7a", "#0071e3", "#aeaeb2"];
+import { CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/lib/chartTheme";
 
 export function CitationShare({ data }: { data: CitationShareResponse }) {
   const chart = data.rows.slice(0, 6).map((r) => ({
@@ -33,46 +32,32 @@ export function CitationShare({ data }: { data: CitationShareResponse }) {
                   label={(e) => e.name}
                 >
                   {chart.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                    <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: "#ffffff",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: 11,
-                    color: "#1d1d1f",
-                  }}
-                />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              marginTop: 8,
-              fontSize: 13,
-            }}
-          >
+          <table style={{ marginTop: 8 }}>
             <thead>
-              <tr style={{ textAlign: "left", color: "var(--ink-muted-48)" }}>
-                <th style={{ padding: "8px 6px" }}>#</th>
-                <th style={{ padding: "8px 6px" }}>브랜드</th>
-                <th style={{ padding: "8px 6px" }}>인용 수</th>
-                <th style={{ padding: "8px 6px" }}>점유율</th>
-                <th style={{ padding: "8px 6px" }}>매체별</th>
+              <tr>
+                <th>#</th>
+                <th>브랜드</th>
+                <th>인용 수</th>
+                <th>점유율</th>
+                <th>매체별</th>
               </tr>
             </thead>
             <tbody>
               {data.rows.map((r, i) => (
-                <tr key={r.brand_id} style={{ borderTop: "1px solid var(--divider-soft)" }}>
-                  <td style={{ padding: "8px 6px" }}>{i + 1}</td>
-                  <td style={{ padding: "8px 6px" }}>{r.brand_name}</td>
-                  <td style={{ padding: "8px 6px" }}>{r.citation_count}</td>
-                  <td style={{ padding: "8px 6px" }}>{(r.share * 100).toFixed(1)}%</td>
-                  <td style={{ padding: "8px 6px" }} className="muted">
+                <tr key={r.brand_id}>
+                  <td>{i + 1}</td>
+                  <td>{r.brand_name}</td>
+                  <td>{r.citation_count}</td>
+                  <td>{(r.share * 100).toFixed(1)}%</td>
+                  <td className="muted">
                     {Object.entries(r.by_media_type)
                       .map(([k, v]) => `${k}:${v}`)
                       .join(", ")}

@@ -3,9 +3,10 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 // SF Pro is proprietary; Inter is the documented open-source substitute.
+// Only the weights the stylesheet actually uses (300 / 400 / 600).
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "600", "700"],
+  weight: ["300", "400", "600"],
   variable: "--font-inter",
   display: "swap",
 });
