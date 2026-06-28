@@ -9,12 +9,7 @@ export function StrategyReport({ strategies }: { strategies: StrategyItem[] }) {
       {strategies.map((s) => (
         <div key={s.id} className="provider-card">
           <h3 style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span
-              className="badge"
-              style={{ background: "var(--accent)", color: "#fff", border: "none" }}
-            >
-              우선순위 {s.priority}
-            </span>
+            <span className="badge badge-accent">우선순위 {s.priority}</span>
             {s.title}
           </h3>
           {s.rationale && (

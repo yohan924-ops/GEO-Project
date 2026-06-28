@@ -17,7 +17,7 @@ export function RankingTable({ rankings }: { rankings: RankingRow[] }) {
       style={{ width: "100%", borderCollapse: "collapse", marginTop: 12, fontSize: 13 }}
     >
       <thead>
-        <tr style={{ textAlign: "left", color: "var(--muted)" }}>
+        <tr style={{ textAlign: "left", color: "var(--ink-muted-48)" }}>
           <th style={{ padding: "8px 6px" }}>#</th>
           <th style={{ padding: "8px 6px" }}>브랜드/서비스</th>
           <th style={{ padding: "8px 6px" }}>노출률</th>
@@ -33,7 +33,7 @@ export function RankingTable({ rankings }: { rankings: RankingRow[] }) {
       </thead>
       <tbody>
         {rankings.map((r, i) => (
-          <tr key={r.brand_or_service} style={{ borderTop: "1px solid var(--border)" }}>
+          <tr key={r.brand_or_service} style={{ borderTop: "1px solid var(--divider-soft)" }}>
             <td style={{ padding: "8px 6px" }}>{i + 1}</td>
             <td style={{ padding: "8px 6px" }}>{r.brand_or_service}</td>
             <td style={{ padding: "8px 6px" }}>{pct(r.appearance_rate)}</td>

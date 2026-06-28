@@ -12,7 +12,8 @@ import {
 } from "recharts";
 import type { RankingRow } from "@/lib/api";
 
-const COLORS = ["#4f86f7", "#56c596", "#f7b955", "#e06c75", "#9a7bdc", "#43b9c7"];
+// Single Action Blue accent, stepped toward ink for lower ranks (Apple palette).
+const COLORS = ["#0066cc", "#0071e3", "#2997ff", "#1d1d1f", "#7a7a7a", "#aeaeb2"];
 
 export function RankingChart({ rankings }: { rankings: RankingRow[] }) {
   const data = rankings.slice(0, 10).map((r) => ({
@@ -24,24 +25,29 @@ export function RankingChart({ rankings }: { rankings: RankingRow[] }) {
     <div style={{ width: "100%", height: 320 }}>
       <ResponsiveContainer>
         <BarChart data={data} layout="vertical" margin={{ left: 24, right: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#272b34" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
           <XAxis
             type="number"
             domain={[0, 100]}
             unit="%"
-            stroke="#9aa3b2"
+            stroke="#7a7a7a"
             fontSize={12}
           />
           <YAxis
             type="category"
             dataKey="name"
             width={110}
-            stroke="#9aa3b2"
+            stroke="#7a7a7a"
             fontSize={12}
           />
           <Tooltip
             formatter={(v: number) => [`${v}%`, "노출률"]}
-            contentStyle={{ background: "#181b22", border: "1px solid #272b34" }}
+            contentStyle={{
+              background: "#ffffff",
+              border: "1px solid #e0e0e0",
+              borderRadius: 11,
+              color: "#1d1d1f",
+            }}
           />
           <Bar dataKey="rate" radius={[0, 4, 4, 0]}>
             {data.map((_, i) => (

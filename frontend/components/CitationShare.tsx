@@ -3,7 +3,7 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import type { CitationShareResponse } from "@/lib/api";
 
-const COLORS = ["#4f86f7", "#56c596", "#f7b955", "#e06c75", "#9a7bdc", "#43b9c7"];
+const COLORS = ["#0066cc", "#2997ff", "#1d1d1f", "#7a7a7a", "#0071e3", "#aeaeb2"];
 
 export function CitationShare({ data }: { data: CitationShareResponse }) {
   const chart = data.rows.slice(0, 6).map((r) => ({
@@ -37,7 +37,12 @@ export function CitationShare({ data }: { data: CitationShareResponse }) {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: "#181b22", border: "1px solid #272b34" }}
+                  contentStyle={{
+                    background: "#ffffff",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: 11,
+                    color: "#1d1d1f",
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -52,7 +57,7 @@ export function CitationShare({ data }: { data: CitationShareResponse }) {
             }}
           >
             <thead>
-              <tr style={{ textAlign: "left", color: "var(--muted)" }}>
+              <tr style={{ textAlign: "left", color: "var(--ink-muted-48)" }}>
                 <th style={{ padding: "8px 6px" }}>#</th>
                 <th style={{ padding: "8px 6px" }}>브랜드</th>
                 <th style={{ padding: "8px 6px" }}>인용 수</th>
@@ -62,7 +67,7 @@ export function CitationShare({ data }: { data: CitationShareResponse }) {
             </thead>
             <tbody>
               {data.rows.map((r, i) => (
-                <tr key={r.brand_id} style={{ borderTop: "1px solid var(--border)" }}>
+                <tr key={r.brand_id} style={{ borderTop: "1px solid var(--divider-soft)" }}>
                   <td style={{ padding: "8px 6px" }}>{i + 1}</td>
                   <td style={{ padding: "8px 6px" }}>{r.brand_name}</td>
                   <td style={{ padding: "8px 6px" }}>{r.citation_count}</td>
