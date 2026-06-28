@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   createBrand,
   generatePrompts,
+  generateStrategy,
   getCitationShare,
   getRankings,
   runAnalysis,
@@ -12,6 +13,7 @@ import {
   type CitationShareResponse,
   type RankingResponse,
   type SingleSearchResponse,
+  type StrategyResponse,
 } from "@/lib/api";
 import { PromptList } from "@/components/PromptList";
 import { SearchResult } from "@/components/SearchResult";
@@ -19,6 +21,7 @@ import { RankingChart } from "@/components/RankingChart";
 import { RankingTable } from "@/components/RankingTable";
 import { OwnedMediaRegistry } from "@/components/OwnedMediaRegistry";
 import { CitationShare } from "@/components/CitationShare";
+import { StrategyReport } from "@/components/StrategyReport";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -36,6 +39,9 @@ export default function Home() {
 
   const [loadingShare, setLoadingShare] = useState(false);
   const [share, setShare] = useState<CitationShareResponse | null>(null);
+
+  const [loadingStrategy, setLoadingStrategy] = useState(false);
+  const [strategy, setStrategy] = useState<StrategyResponse | null>(null);
 
   async function onGenerate() {
     setError(null);
@@ -78,6 +84,19 @@ export default function Home() {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoadingShare(false);
+    }
+  }
+
+  async function onGenerateStrategy() {
+    if (!result) return;
+    setError(null);
+    setLoadingStrategy(true);
+    try {
+      setStrategy(await generateStrategy(result.analysis.id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoadingStrategy(false);
     }
   }
 
@@ -187,7 +206,29 @@ export default function Home() {
       </section>
 
       <section className="panel">
-        <h2 style={{ marginTop: 0, fontSize: 18 }}>④ 3사 1회 검색 (어댑터 검증)</h2>
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>④ GEO 전략 리포트 (서비스 4)</h2>
+        <p className="muted" style={{ fontSize: 13, marginTop: 0 }}>
+          ②·③ 분석 결과를 바탕으로 갭을 분석해 GEO 점유율을 높이기 위한 우선순위
+          전략을 생성합니다.
+        </p>
+        {result ? (
+          <>
+            <button onClick={onGenerateStrategy} disabled={loadingStrategy}>
+              {loadingStrategy ? "생성 중…" : "전략 리포트 생성"}
+            </button>
+            {strategy && (
+              <div style={{ marginTop: 16 }}>
+                <StrategyReport strategies={strategy.strategies} />
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="muted">먼저 프롬프트를 생성하세요.</p>
+        )}
+      </section>
+
+      <section className="panel">
+        <h2 style={{ marginTop: 0, fontSize: 18 }}>⑤ 3사 1회 검색 (어댑터 검증)</h2>
         <div className="row">
           <div style={{ flex: 1 }}>
             <label>프롬프트</label>

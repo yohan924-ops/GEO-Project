@@ -176,3 +176,27 @@ export function getCitationShare(
 ): Promise<CitationShareResponse> {
   return request<CitationShareResponse>(`/analyses/${analysisId}/citation-share`);
 }
+
+export interface StrategyItem {
+  id: number;
+  analysis_id: number;
+  priority: number;
+  title: string;
+  rationale: string | null;
+  action_items: string[];
+}
+
+export interface StrategyResponse {
+  analysis_id: number;
+  strategies: StrategyItem[];
+}
+
+export function generateStrategy(analysisId: number): Promise<StrategyResponse> {
+  return request<StrategyResponse>(`/analyses/${analysisId}/strategy`, {
+    method: "POST",
+  });
+}
+
+export function getStrategy(analysisId: number): Promise<StrategyResponse> {
+  return request<StrategyResponse>(`/analyses/${analysisId}/strategy`);
+}
