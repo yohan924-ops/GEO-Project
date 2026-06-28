@@ -14,7 +14,11 @@
    (수동으로 하려면 New → Web Service → Docker, **Root Directory = `backend`**.)
 2. 환경변수 설정:
    - `CORS_ORIGINS` = 배포된 프론트 URL (예: `https://geo-analyzer.vercel.app`)
-   - 실제 검색을 쓸 경우: `GEO_TEST_MODE=false` + `OPENAI_API_KEY` / `GOOGLE_API_KEY` / `ANTHROPIC_API_KEY`
+   - 실제 검색을 쓸 경우: `GEO_TEST_MODE=false` + **구독 중인 엔진의 키만** 설정
+     (`OPENAI_API_KEY` / `GOOGLE_API_KEY` / `ANTHROPIC_API_KEY`).
+   - **3개를 다 구독하지 않아도 된다.** 키를 넣은 엔진만 자동으로 사용된다.
+     특정 엔진만 강제하려면 `ENABLED_PROVIDERS=anthropic` 처럼 지정.
+   - 활성 엔진은 `GET /providers` 로 확인할 수 있다.
 3. 배포되면 백엔드 URL을 받는다 (예: `https://geo-analyzer-backend.onrender.com`). `/{health}` 와
    `/docs` 로 동작을 확인한다.
 

@@ -2,7 +2,7 @@
 
 import asyncio
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.config import get_settings
 from app.providers import get_all_adapters
@@ -40,6 +40,11 @@ async def single_search(payload: SingleSearchRequest) -> SingleSearchResponse:
     """
     settings = get_settings()
     adapters = get_all_adapters(settings)
+    if not adapters:
+        raise HTTPException(
+            status_code=400,
+            detail="no LLM providers configured — set an API key or ENABLED_PROVIDERS",
+        )
 
     async def run(provider: str) -> ProviderResult:
         adapter, model = adapters[provider]

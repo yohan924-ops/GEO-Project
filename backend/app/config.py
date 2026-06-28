@@ -21,6 +21,11 @@ class Settings(BaseSettings):
     # Test mode: no real LLM calls (template prompts + mock adapters)
     geo_test_mode: bool = True
 
+    # Which providers to use, comma-separated (subset of openai,gemini,anthropic).
+    # Empty = auto: in real mode, every provider whose API key is set; in test
+    # mode, all three. Lets you run with only the engines you subscribe to.
+    enabled_providers: str = ""
+
     # CORS: comma-separated allowed origins (set the deployed frontend URL here).
     cors_origins: str = "http://localhost:3000"
 

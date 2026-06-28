@@ -16,6 +16,7 @@ from app.api import (
 )
 from app.config import get_settings
 from app.db import init_db
+from app.providers import active_providers
 
 
 @asynccontextmanager
@@ -47,3 +48,13 @@ app.include_router(search.router)
 @app.get("/health", tags=["meta"])
 def health() -> dict:
     return {"status": "ok", "test_mode": get_settings().geo_test_mode}
+
+
+@app.get("/providers", tags=["meta"])
+def providers() -> dict:
+    """Which LLM engines are active for this deployment (and test-mode flag)."""
+    settings = get_settings()
+    return {
+        "test_mode": settings.geo_test_mode,
+        "providers": active_providers(settings),
+    }

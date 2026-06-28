@@ -52,11 +52,30 @@ def get_adapter(provider: str, settings: Settings | None = None) -> ProviderAdap
     return AnthropicAdapter(key)
 
 
+def active_providers(settings: Settings | None = None) -> list[str]:
+    """Providers to actually use, honoring the user's selection.
+
+    - ``ENABLED_PROVIDERS`` set → exactly those (in that order, valid ones only).
+    - else test mode → all three (mocked).
+    - else (real mode) → every provider whose API key is configured, so you
+      run with only the engines you subscribe to.
+    """
+    settings = settings or get_settings()
+    raw = settings.enabled_providers.strip()
+    if raw:
+        chosen = [p.strip() for p in raw.split(",")]
+        return [p for p in chosen if p in PROVIDERS]
+    if settings.geo_test_mode:
+        return list(PROVIDERS)
+    return [p for p in PROVIDERS if _api_key_for(p, settings)]
+
+
 def get_all_adapters(
     settings: Settings | None = None,
 ) -> dict[str, tuple[ProviderAdapter, str]]:
-    """Return ``{provider: (adapter, model)}`` for all three providers."""
+    """Return ``{provider: (adapter, model)}`` for the active providers only."""
     settings = settings or get_settings()
     return {
-        p: (get_adapter(p, settings), _model_for(p, settings)) for p in PROVIDERS
+        p: (get_adapter(p, settings), _model_for(p, settings))
+        for p in active_providers(settings)
     }

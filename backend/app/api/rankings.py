@@ -8,6 +8,7 @@ from sqlmodel import Session, select
 from app.config import get_settings
 from app.db import get_session
 from app.models import Analysis, Prompt, ProviderRun
+from app.providers import active_providers
 from app.schemas.analysis import AnalysisRead
 from app.schemas.ranking import RankingResponse, RankingRowRead, RunRequest
 from app.services.ranking import aggregate_rankings
@@ -37,6 +38,11 @@ async def run(
         raise HTTPException(status_code=400, detail="analysis has no prompts")
 
     settings = get_settings()
+    if not active_providers(settings):
+        raise HTTPException(
+            status_code=400,
+            detail="no LLM providers configured — set an API key or ENABLED_PROVIDERS",
+        )
     repeats = payload.repeats if payload else None
 
     if settings.geo_test_mode:
