@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GEO Analyzer — 데모</title>
+<style>
+:root{
+  --primary:#0066cc;--primary-focus:#0071e3;--primary-on-dark:#2997ff;
+  --ink:#1d1d1f;--body-muted:#cccccc;--ink-muted-80:#333;--ink-muted-48:#7a7a7a;
+  --divider-soft:#f0f0f0;--hairline:#e0e0e0;--canvas:#fff;--canvas-parchment:#f5f5f7;
+  --surface-pearl:#fafafc;--surface-tile-1:#272729;--surface-black:#000;--apple-red:#d70015;
+  --r-sm:8px;--r-md:11px;--r-lg:18px;--r-pill:9999px;
+  --s-sm:12px;--s-lg:24px;--s-xl:32px;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--canvas-parchment);color:var(--ink);font-family:var(--font);
+  font-size:17px;line-height:1.47;letter-spacing:-0.374px;-webkit-font-smoothing:antialiased}
+.global-nav{background:var(--surface-black);color:#fff;height:44px;display:flex;align-items:center;position:sticky;top:0;z-index:10}
+.global-nav-inner{max-width:1024px;width:100%;margin:0 auto;padding:0 22px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-size:14px;font-weight:600;letter-spacing:-0.224px}
+.nav-meta{font-size:12px;color:var(--body-muted);letter-spacing:-0.12px}
+main{max-width:1024px;margin:0 auto;padding:0 22px 96px}
+.hero{background:var(--surface-tile-1);color:#fff;border-radius:var(--r-lg);margin-top:var(--s-lg);padding:64px 48px;text-align:center}
+.hero h1{font-size:56px;font-weight:600;line-height:1.07;letter-spacing:-0.28px;margin:0}
+.hero p{font-size:24px;font-weight:300;color:var(--body-muted);max-width:560px;margin:16px auto 0}
+.panel{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:var(--s-xl);margin-top:var(--s-lg)}
+.eyebrow{font-size:14px;font-weight:600;color:var(--primary);letter-spacing:-0.224px;margin:0 0 4px}
+h2{font-size:34px;font-weight:600;line-height:1.2;letter-spacing:-0.374px;margin:0 0 6px}
+h3{font-size:21px;font-weight:600;letter-spacing:.231px;margin:16px 0 8px}
+.muted{color:var(--ink-muted-48)}
+.section-copy{margin:0 0 var(--s-lg)}
+.row{display:flex;gap:var(--s-sm);flex-wrap:wrap;align-items:flex-end}
+label{display:block;font-size:14px;color:var(--ink-muted-48);margin-bottom:6px;letter-spacing:-0.224px}
+input,select{background:var(--canvas);border:1px solid var(--hairline);border-radius:var(--r-pill);color:var(--ink);
+  padding:11px 20px;height:44px;font-family:var(--font);font-size:17px;letter-spacing:-0.374px;min-width:200px}
+input:focus,select:focus{outline:2px solid var(--primary-focus);outline-offset:1px}
+button{background:var(--primary);color:#fff;border:none;border-radius:var(--r-pill);padding:11px 22px;
+  font-family:var(--font);font-size:17px;letter-spacing:-0.374px;cursor:pointer;transition:transform .1s}
+button:active{transform:scale(.95)}
+button:disabled{background:var(--surface-pearl);color:var(--ink-muted-48);cursor:not-allowed}
+.btn-ghost{background:transparent;color:var(--primary);border:1px solid var(--primary)}
+.badge{display:inline-block;font-size:12px;padding:4px 10px;border-radius:var(--r-pill);background:var(--surface-pearl);
+  border:1px solid var(--hairline);color:var(--ink-muted-80);letter-spacing:-0.12px}
+.badge-accent{background:var(--primary);border:none;color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface-pearl);border:1px solid var(--hairline);
+  border-radius:var(--r-pill);padding:6px 12px;font-size:14px;color:var(--ink-muted-80);letter-spacing:-0.224px}
+.chip button{background:transparent;color:var(--ink-muted-48);padding:0 2px;font-size:13px;line-height:1}
+.card{border:1px solid var(--hairline);border-radius:var(--r-lg);padding:var(--s-lg);margin-top:var(--s-sm);background:var(--canvas)}
+.card h3{margin:0 0 8px;font-size:17px;letter-spacing:-0.374px}
+table{width:100%;border-collapse:collapse;font-size:14px;letter-spacing:-0.224px;margin-top:12px}
+th{color:var(--ink-muted-48);font-weight:600;text-align:left;padding:8px 6px}
+td{padding:8px 6px}
+tr+tr td{border-top:1px solid var(--divider-soft)}
+.bar-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.bar-name{width:150px;font-size:13px;text-align:right;color:var(--ink-muted-80)}
+.bar-track{flex:1;background:var(--divider-soft);border-radius:4px;height:18px;overflow:hidden}
+.bar-fill{height:100%;background:var(--primary);border-radius:4px}
+.bar-val{width:54px;font-size:13px;color:var(--ink-muted-48)}
+.pie{width:200px;height:200px;border-radius:50%;margin:8px auto}
+.legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:13px;margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+.citation{font-size:14px;margin-top:6px}
+.citation a{color:var(--primary);text-decoration:none}
+a{color:var(--primary)}
+.demo-note{background:#fff8e6;border:1px solid #f0e0a0;color:#665100;border-radius:var(--r-md);
+  padding:10px 14px;font-size:13px;margin-top:var(--s-lg)}
+</style>
+</head>
+<body>
+<header class="global-nav"><div class="global-nav-inner"><span class="brand">GEO Analyzer</span><span class="nav-meta">ChatGPT · Gemini · Claude</span></div></header>
+<main>
+  <section class="hero">
+    <h1>GEO Analyzer</h1>
+    <p>생성형 검색엔진이 당신의 브랜드를 어떻게 말하는지 측정하고, 점유율을 높일 전략을 제시합니다.</p>
+  </section>
+
+  <div class="demo-note">⚙️ 이 파일은 <b>오프라인 데모</b>입니다. 백엔드 없이 내장 mock 데이터로 동작하며, 실제 LLM 호출·과금이 없습니다.</div>
+
+  <section class="panel">
+    <p class="eyebrow">단계 01</p><h2>프롬프트 생성</h2>
+    <p class="muted section-copy">브랜드/제품명으로 국내 소비자가 검색할 키워드와 질문 프롬프트를 생성합니다.</p>
+    <div class="row">
+      <div><label>브랜드 / 제품명</label><input id="brand" placeholder="예: 나이키" value="나이키"></div>
+      <div><label>분야 (선택)</label><input id="industry" placeholder="예: 운동화" value="운동화"></div>
+      <button onclick="genPrompts()">프롬프트 생성</button>
+    </div>
+    <div id="promptOut"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">단계 02 · 서비스 2</p><h2>순위 분석</h2>
+    <p class="muted section-copy">생성된 프롬프트를 3사에 반복 검색해 답변에 등장하는 브랜드/서비스의 노출 순위·빈도·안정성을 집계합니다.</p>
+    <button onclick="runRanking()">순위 분석 실행</button>
+    <div id="rankOut"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">단계 03 · 서비스 3</p><h2>온드미디어 인용 점유율</h2>
+    <p class="muted section-copy">브랜드의 온드미디어(웹·블로그·인스타·페북)를 등록하면, 검색 답변의 인용 URL을 도메인·핸들로 매핑해 브랜드별 인용 점유율을 집계합니다.</p>
+    <div class="row">
+      <div><label>매체 유형</label>
+        <select id="mediaType" style="min-width:140px">
+          <option value="web">web</option><option value="blog">blog</option>
+          <option value="instagram">instagram</option><option value="facebook">facebook</option>
+        </select></div>
+      <div style="flex:1"><label>도메인 또는 핸들 (예: example.com, @handle)</label><input id="omValue" style="width:100%" placeholder="example.com"></div>
+      <button onclick="addOM()">추가</button>
+    </div>
+    <div id="omChips" class="chips"></div>
+    <div style="margin-top:16px"><button class="btn-ghost" onclick="runShare()">인용 점유율 집계</button>
+      <span class="muted" style="font-size:12px;margin-left:10px">※ 데모는 example.com / blog.example.org / instagram.com 도메인이 인용원으로 사용됩니다.</span></div>
+    <div id="shareOut"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">단계 04 · 서비스 4</p><h2>GEO 전략 리포트</h2>
+    <p class="muted section-copy">02·03 분석 결과를 바탕으로 갭을 분석해 GEO 점유율을 높이기 위한 우선순위 전략을 생성합니다.</p>
+    <button onclick="runStrategy()">전략 리포트 생성</button>
+    <div id="stratOut"></div>
+  </section>
+
+  <section class="panel">
+    <p class="eyebrow">검증</p><h2>3사 1회 검색</h2>
+    <p class="muted section-copy">단일 프롬프트를 ChatGPT·Gemini·Claude에 한 번씩 호출해 답변과 인용 파싱을 확인합니다.</p>
+    <div class="row">
+      <div style="flex:1"><label>프롬프트</label><input id="searchPrompt" style="width:100%" placeholder="예: 운동화 추천해줘" value="러닝화 추천해줘"></div>
+      <button onclick="runSearch()">검색</button>
+    </div>
+    <div id="searchOut"></div>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const BRANDS = ["BrandAlpha","BrandBeta","BrandGamma"];
+const PROV = [["openai","ChatGPT (OpenAI)"],["gemini","Gemini (Google)"],["anthropic","Claude (Anthropic)"]];
+const PIE = ["#0066cc","#2997ff","#1d1d1f","#7a7a7a","#0071e3","#aeaeb2"];
+function hash(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0}return h}
+let ownedMedia = [];
+
+const KW_MODS=["추천","후기","가격","비교","순위","장단점","사용법","브랜드","인기","신상","할인","정품","내구성","디자인","성능","AS","구매처","최저가","리뷰","평점"];
+const Q_TMPL=["{b} 추천해줘","{b} 어디서 사는 게 좋아?","{b} 중에 가성비 좋은 건 뭐야?","{b} 인기 브랜드 알려줘","{b} 살 때 뭘 봐야 해?","{b} 후기 좋은 제품은?","{b} 처음 사는데 추천 부탁해","{b} 가격대별로 정리해줘","요즘 잘나가는 {b} 뭐야?","{b} 선물용으로 뭐가 좋아?"];
+
+function genPrompts(){
+  const brand=$('brand').value.trim()||"브랜드";
+  const cat=$('industry').value.trim()||(brand+" 같은 제품");
+  const seeds=[brand,cat,cat+" 브랜드"];
+  const kws=[],qs=[];
+  for(let i=0;kws.length<20;i++){const kw=(seeds[i%seeds.length]+" "+KW_MODS[i%KW_MODS.length]).trim();if(!kws.includes(kw))kws.push(kw)}
+  for(let j=0;qs.length<20;j++){const q=Q_TMPL[j%Q_TMPL.length].replace('{b}',seeds[j%seeds.length]);if(!qs.includes(q))qs.push(q)}
+  $('promptOut').innerHTML=`<div style="margin-top:16px">
+    <span class="badge">analysis #1</span> <span class="badge">status: done</span>
+    <h3>키워드</h3><div class="chips">${kws.map(k=>`<span class="chip">${esc(k)}</span>`).join('')}</div>
+    <h3>질문 프롬프트</h3><div class="chips">${qs.map(q=>`<span class="chip">${esc(q)}</span>`).join('')}</div></div>`;
+}
+
+function ranking(){
+  const base=[1.0,0.983,0.965];
+  return BRANDS.map((b,i)=>({name:b,rate:base[i],avg:[2.07,2.12,2.17][i],
+    stab:[1.0,0.975,0.975][i],byp:{openai:base[i],gemini:base[i],anthropic:[1.0,1.0,0.95][i]}}));
+}
+function runRanking(){
+  const r=ranking(),total=360;
+  const bars=r.map((x,i)=>`<div class="bar-row"><div class="bar-name">${x.name}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${(x.rate*100).toFixed(1)}%;background:${PIE[i]}"></div></div>
+    <div class="bar-val">${(x.rate*100).toFixed(1)}%</div></div>`).join('');
+  const rows=r.map((x,i)=>`<tr><td>${i+1}</td><td>${x.name}</td><td>${(x.rate*100).toFixed(1)}%</td>
+    <td>${Math.round(x.rate*total)}</td><td>${x.avg.toFixed(2)}</td><td>${(x.stab*100).toFixed(1)}%</td>
+    <td class="muted">${(x.byp.openai*100).toFixed(1)}%</td><td class="muted">${(x.byp.gemini*100).toFixed(1)}%</td><td class="muted">${(x.byp.anthropic*100).toFixed(1)}%</td></tr>`).join('');
+  $('rankOut').innerHTML=`<div style="margin-top:16px"><span class="badge">총 ${total}회 검색</span> <span class="badge">cost $0.0000</span>
+    <h3>노출률 상위</h3>${bars}
+    <table><thead><tr><th>#</th><th>브랜드/서비스</th><th>노출률</th><th>빈도</th><th>평균순위</th><th>안정성</th><th>ChatGPT</th><th>Gemini</th><th>Claude</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
+function renderOM(){
+  $('omChips').innerHTML = ownedMedia.length? ownedMedia.map((o,i)=>`<span class="chip"><span class="badge">${o.type}</span> ${esc(o.value)} <button onclick="rmOM(${i})">✕</button></span>`).join('')
+    : '<span class="muted">등록된 온드미디어가 없습니다.</span>';
+}
+function addOM(){const v=$('omValue').value.trim();if(!v)return;ownedMedia.push({type:$('mediaType').value,value:v});$('omValue').value='';renderOM()}
+function rmOM(i){ownedMedia.splice(i,1);renderOM()}
+const MOCK_DOMAINS=["example.com","blog.example.org","instagram.com"];
+function normDom(v){return v.toLowerCase().replace(/^@/,'').replace(/^https?:\/\//,'').replace(/^www\./,'').split('/')[0]}
+function runShare(){
+  const brand=$('brand').value.trim()||"브랜드";const total=360;
+  const matchedDomains=ownedMedia.filter(o=>MOCK_DOMAINS.includes(normDom(o.value)));
+  const byMedia={};let matched=0;
+  matchedDomains.forEach(o=>{const c=Math.round(total/3);matched+=c;byMedia[o.type]=(byMedia[o.type]||0)+c});
+  let html=`<div style="margin-top:16px"><span class="badge">전체 인용 ${total}</span> <span class="badge">매핑됨 ${matched}</span>`;
+  if(matched>0){
+    const share=matched/total, deg=share*360;
+    html+=`<div class="pie" style="background:conic-gradient(var(--primary) 0 ${deg}deg, var(--divider-soft) ${deg}deg 360deg)"></div>
+      <div class="legend"><span><i style="background:var(--primary)"></i>${esc(brand)} ${(share*100).toFixed(1)}%</span><span><i style="background:var(--divider-soft)"></i>기타 ${((1-share)*100).toFixed(1)}%</span></div>
+      <table><thead><tr><th>#</th><th>브랜드</th><th>인용 수</th><th>점유율</th><th>매체별</th></tr></thead>
+      <tbody><tr><td>1</td><td>${esc(brand)}</td><td>${matched}</td><td>${(share*100).toFixed(1)}%</td>
+      <td class="muted">${Object.entries(byMedia).map(([k,v])=>k+':'+v).join(', ')}</td></tr></tbody></table>`;
+  } else {
+    html+=`<p class="muted">매핑된 인용이 없습니다. 위에서 <b>example.com</b> 같은 도메인을 등록하고 다시 집계하세요.</p>`;
+  }
+  $('shareOut').innerHTML=html+'</div>';
+}
+
+function runStrategy(){
+  const b=$('brand').value.trim()||"브랜드";
+  const items=[
+    {p:1,t:"생성형 검색 노출 강화",r:`'${b}'의 답변 노출률이 0%로 낮습니다. 현재 BrandAlpha, BrandBeta 등이 답변을 점유하고 있어 인지도 확보가 시급합니다.`,
+      a:["제품/브랜드를 명확히 정의한 구조화 콘텐츠(FAQ·비교표·스펙) 발행","권위 있는 외부 매체·리뷰에 브랜드가 인용되도록 PR/제휴 확대","핵심 질문 프롬프트에 직접 답하는 페이지를 온드미디어에 구축"]},
+    {p:2,t:"온드미디어 인용 점유율 확대",r:`'${b}'의 인용 점유율이 낮습니다. AI 답변이 출처로 삼는 인용 URL에 자사 채널이 더 많이 포함되어야 합니다.`,
+      a:["웹·블로그·인스타·페북 등 온드미디어를 레지스트리에 모두 등록·정비","인용되기 쉬운 형식(요약·통계·인용문)으로 콘텐츠 재구성","공식 도메인 권위(피인용·백링크)를 높여 인용 우선순위 확보"]},
+    {p:3,t:"Gemini 채널 집중 공략",r:"Gemini에서의 노출이 상대적으로 약합니다. 엔진별 인용 소스 특성에 맞춘 최적화가 필요합니다.",
+      a:["Gemini가 자주 인용하는 소스 유형 분석 후 해당 채널에 콘텐츠 배치","엔진별 답변을 정기 모니터링해 노출 변화 추적"]}
+  ];
+  $('stratOut').innerHTML='<div style="margin-top:16px">'+items.map(s=>`<div class="card">
+    <h3><span class="badge badge-accent">우선순위 ${s.p}</span> ${esc(s.t)}</h3>
+    <p class="muted" style="font-size:14px">${esc(s.r)}</p>
+    <ul style="margin:6px 0 0;padding-left:18px;font-size:14px;line-height:1.6">${s.a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('')+'</div>';
+}
+
+function runSearch(){
+  const p=$('searchPrompt').value.trim()||"추천해줘";
+  const cards=PROV.map(([id,label],pi)=>{
+    const seed=hash(id+p),order=BRANDS.slice(seed%3).concat(BRANDS.slice(0,seed%3));
+    const ans=`[mock:${id}] For '${esc(p).slice(0,40)}', popular options include ${order.join(', ')}.`;
+    const doms=["example.com","blog.example.org","instagram.com"];
+    const cits=order.map((b,i)=>`<div class="citation"><a href="https://${doms[i]}/p/${(seed>>(i*4))%1000}" target="_blank" rel="noreferrer">${b} review</a> <span class="muted">· ${doms[i]}</span></div>`).join('');
+    return `<div class="card"><h3>${label} <span class="badge">mock-${id}</span> <span class="badge">1ms</span> <span class="badge">$0.0000</span></h3>
+      <p style="font-size:14px">${ans}</p><div class="muted" style="font-size:13px">인용 3건</div>${cits}</div>`;
+  }).join('');
+  $('searchOut').innerHTML=`<div style="margin-top:12px"><span class="badge">테스트 모드 (mock · 무과금)</span>${cards}</div>`;
+}
+</script>
+</body>
+</html>
