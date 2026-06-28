@@ -26,10 +26,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="GEO Analyzer", version="0.1.0", lifespan=lifespan)
 
-# Single-user internal tool; allow the local Next.js dev server.
+# Allowed origins come from settings (CORS_ORIGINS); defaults to the local
+# Next.js dev server. Set the deployed frontend URL when deploying.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=get_settings().cors_origins_list,
     allow_methods=["*"],
     allow_headers=["*"],
 )

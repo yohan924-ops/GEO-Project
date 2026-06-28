@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     # Test mode: no real LLM calls (template prompts + mock adapters)
     geo_test_mode: bool = True
 
+    # CORS: comma-separated allowed origins (set the deployed frontend URL here).
+    cors_origins: str = "http://localhost:3000"
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
     # Provider models
     search_model_openai: str = "gpt-4o"
     search_model_gemini: str = "gemini-2.0-flash"
